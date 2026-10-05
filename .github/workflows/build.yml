@@ -15,9 +15,9 @@ jobs:
 
     - name: Unzip project
       run: |
-        ls -la
         unzip -q MKVEditor-Android-Project.zip -d extracted
-        ls -la extracted
+        echo "=== Contents ==="
+        find extracted -maxdepth 3 -type f | head -40
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -30,9 +30,9 @@ jobs:
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
         $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
-    - name: Grant execute permission for gradlew
+    - name: Generate Gradle wrapper
       working-directory: extracted/MKVEditor-Android-Project
-      run: chmod +x gradlew
+      run: gradle wrapper --gradle-version 8.11.1
 
     - name: Build Debug APK
       working-directory: extracted/MKVEditor-Android-Project
