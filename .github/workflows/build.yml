@@ -50,6 +50,17 @@ jobs:
         include(":app")
         EOF
 
+    - name: Create gradle.properties
+      working-directory: extracted/MKVEditor-Android-Project
+      run: |
+        cat > gradle.properties << 'EOF'
+        org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+        android.useAndroidX=true
+        android.enableJetifier=true
+        android.nonTransitiveRClass=true
+        kotlin.code.style=official
+        EOF
+
     - name: Fix app/build.gradle.kts (SDK 34)
       working-directory: extracted/MKVEditor-Android-Project
       run: |
