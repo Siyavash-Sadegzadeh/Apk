@@ -61,6 +61,83 @@ jobs:
         kotlin.code.style=official
         EOF
 
+    - name: Create missing resource files
+      working-directory: extracted/MKVEditor-Android-Project/app/src/main
+      run: |
+        mkdir -p res/values res/xml res/drawable res/mipmap-anydpi-v26
+
+        cat > res/values/strings.xml << 'EOF'
+        <resources>
+            <string name="app_name">MKV Editor</string>
+        </resources>
+        EOF
+
+        cat > res/values/colors.xml << 'EOF'
+        <resources>
+            <color name="ic_launcher_background">#1E88E5</color>
+            <color name="primary">#1E88E5</color>
+            <color name="primary_dark">#1565C0</color>
+        </resources>
+        EOF
+
+        cat > res/values/themes.xml << 'EOF'
+        <resources>
+            <style name="Theme.MKVEditor" parent="android:Theme.Material.Light.NoActionBar">
+                <item name="android:statusBarColor">@color/primary_dark</item>
+                <item name="android:windowBackground">@android:color/white</item>
+            </style>
+        </resources>
+        EOF
+
+        cat > res/xml/backup_rules.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <full-backup-content>
+        </full-backup-content>
+        EOF
+
+        cat > res/xml/data_extraction_rules.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <data-extraction-rules>
+            <cloud-backup>
+            </cloud-backup>
+            <device-transfer>
+            </device-transfer>
+        </data-extraction-rules>
+        EOF
+
+        cat > res/drawable/ic_launcher_foreground.xml << 'EOF'
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M30,34 L78,34 L78,74 L30,74 Z" />
+            <path
+                android:fillColor="#1E88E5"
+                android:pathData="M42,44 L42,64 L52,54 Z" />
+            <path
+                android:fillColor="#1E88E5"
+                android:pathData="M56,44 L56,64 L66,54 Z" />
+        </vector>
+        EOF
+
+        cat > res/mipmap-anydpi-v26/ic_launcher.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+            <background android:drawable="@color/ic_launcher_background"/>
+            <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+        </adaptive-icon>
+        EOF
+
+        cp res/mipmap-anydpi-v26/ic_launcher.xml res/mipmap-anydpi-v26/ic_launcher_round.xml
+
+    - name: Change minSdk to 26
+      working-directory: extracted/MKVEditor-Android-Project
+      run: |
+        sed -i 's/minSdk = 24/minSdk = 26/g' app/build.gradle.kts
+
     - name: Generate Gradle wrapper
       working-directory: extracted/MKVEditor-Android-Project
       run: gradle wrapper --gradle-version 8.11.1
