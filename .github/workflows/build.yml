@@ -50,6 +50,52 @@ jobs:
         include(":app")
         EOF
 
+    - name: Fix app/build.gradle.kts
+      working-directory: extracted/MKVEditor-Android-Project
+      run: |
+        cat > app/build.gradle.kts << 'EOF'
+        plugins {
+            id("com.android.application")
+            id("org.jetbrains.kotlin.android")
+            id("org.jetbrains.kotlin.plugin.compose")
+        }
+
+        android {
+            namespace = "com.example.mkveditor"
+            compileSdk = 35
+
+            defaultConfig {
+                applicationId = "com.example.mkveditor"
+                minSdk = 26
+                targetSdk = 35
+                versionCode = 1
+                versionName = "1.0.0"
+            }
+
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
+            }
+
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+
+            buildFeatures {
+                compose = true
+            }
+        }
+
+        dependencies {
+            implementation(platform("androidx.compose:compose-bom:2024.10.01"))
+            implementation("androidx.core:core-ktx:1.15.0")
+            implementation("androidx.activity:activity-compose:1.9.3")
+            implementation("androidx.compose.material3:material3")
+            implementation("androidx.documentfile:documentfile:1.0.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+        }
+        EOF
+
     - name: Create gradle.properties
       working-directory: extracted/MKVEditor-Android-Project
       run: |
@@ -111,15 +157,9 @@ jobs:
             android:height="108dp"
             android:viewportWidth="108"
             android:viewportHeight="108">
-            <path
-                android:fillColor="#FFFFFF"
-                android:pathData="M30,34 L78,34 L78,74 L30,74 Z" />
-            <path
-                android:fillColor="#1E88E5"
-                android:pathData="M42,44 L42,64 L52,54 Z" />
-            <path
-                android:fillColor="#1E88E5"
-                android:pathData="M56,44 L56,64 L66,54 Z" />
+            <path android:fillColor="#FFFFFF" android:pathData="M30,34 L78,34 L78,74 L30,74 Z" />
+            <path android:fillColor="#1E88E5" android:pathData="M42,44 L42,64 L52,54 Z" />
+            <path android:fillColor="#1E88E5" android:pathData="M56,44 L56,64 L66,54 Z" />
         </vector>
         EOF
 
@@ -132,11 +172,6 @@ jobs:
         EOF
 
         cp res/mipmap-anydpi-v26/ic_launcher.xml res/mipmap-anydpi-v26/ic_launcher_round.xml
-
-    - name: Change minSdk to 26
-      working-directory: extracted/MKVEditor-Android-Project
-      run: |
-        sed -i 's/minSdk = 24/minSdk = 26/g' app/build.gradle.kts
 
     - name: Generate Gradle wrapper
       working-directory: extracted/MKVEditor-Android-Project
