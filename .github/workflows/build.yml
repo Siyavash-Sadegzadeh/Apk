@@ -26,7 +26,7 @@ jobs:
     - name: Install SDK components
       run: |
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0"
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
     - name: Fix settings.gradle.kts
       working-directory: extracted/MKVEditor-Android-Project
@@ -60,12 +60,6 @@ jobs:
         android.nonTransitiveRClass=true
         kotlin.code.style=official
         EOF
-
-    - name: Fix app/build.gradle.kts (SDK 34)
-      working-directory: extracted/MKVEditor-Android-Project
-      run: |
-        sed -i 's/compileSdk = 35/compileSdk = 34/g' app/build.gradle.kts
-        sed -i 's/targetSdk = 35/targetSdk = 34/g' app/build.gradle.kts
 
     - name: Generate Gradle wrapper
       working-directory: extracted/MKVEditor-Android-Project
